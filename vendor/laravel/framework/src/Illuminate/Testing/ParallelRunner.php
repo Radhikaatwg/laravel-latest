@@ -2,11 +2,13 @@
 
 namespace Illuminate\Testing;
 
+use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Support\Facades\ParallelTesting;
 use ParaTest\Runners\PHPUnit\Options;
 use ParaTest\Runners\PHPUnit\RunnerInterface;
 use ParaTest\Runners\PHPUnit\WrapperRunner;
 use PHPUnit\TextUI\XmlConfiguration\PhpHandler;
+use RuntimeException;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -104,7 +106,7 @@ class ParallelRunner implements RunnerInterface
     /**
      * Apply the given callback for each process.
      *
-     * @param  callable $callback
+     * @param  callable  $callback
      * @return void
      */
     protected function forEachProcess($callback)
@@ -124,15 +126,28 @@ class ParallelRunner implements RunnerInterface
      * Creates the application.
      *
      * @return \Illuminate\Contracts\Foundation\Application
+     *
+     * @throws \RuntimeException
      */
     protected function createApplication()
     {
         $applicationResolver = static::$applicationResolver ?: function () {
-            $applicationCreator = new class {
-                use \Tests\CreatesApplication;
-            };
+            if (trait_exists(\Tests\CreatesApplication::class)) {
+                $applicationCreator = new class
+                {
+                    use \Tests\CreatesApplication;
+                };
 
-            return $applicationCreator->createApplication();
+                return $applicationCreator->createApplication();
+            } elseif (file_exists(getcwd().'/bootstrap/app.php')) {
+                $app = require getcwd().'/bootstrap/app.php';
+
+                $app->make(Kernel::class)->bootstrap();
+
+                return $app;
+            }
+
+            throw new RuntimeException('Parallel Runner unable to resolve application.');
         };
 
         return call_user_func($applicationResolver);

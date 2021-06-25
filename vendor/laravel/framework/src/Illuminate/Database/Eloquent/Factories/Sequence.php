@@ -44,11 +44,11 @@ class Sequence
      */
     public function __invoke()
     {
-        if ($this->index > ($this->count - 1)) {
+        if ($this->index >= $this->count) {
             $this->index = 0;
         }
 
-        return tap($this->sequence[$this->index], function () {
+        return tap(value($this->sequence[$this->index]), function () {
             $this->index = $this->index + 1;
         });
     }

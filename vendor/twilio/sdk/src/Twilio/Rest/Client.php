@@ -27,6 +27,7 @@ use Twilio\VersionInfo;
  * @property Events $events
  * @property Fax $fax
  * @property FlexApi $flexApi
+ * @property FrontlineApi $frontlineApi
  * @property Insights $insights
  * @property IpMessaging $ipMessaging
  * @property Lookups $lookups
@@ -118,6 +119,7 @@ class Client {
     protected $_events;
     protected $_fax;
     protected $_flexApi;
+    protected $_frontlineApi;
     protected $_insights;
     protected $_ipMessaging;
     protected $_lookups;
@@ -146,7 +148,7 @@ class Client {
      *
      * @param string $username Username to authenticate with
      * @param string $password Password to authenticate with
-     * @param string $accountSid Account Sid to authenticate with, defaults to
+     * @param string $accountSid Account SID to authenticate with, defaults to
      *                           $username
      * @param string $region Region to send requests to, defaults to 'us1' if Edge
      *                       provided
@@ -711,6 +713,18 @@ class Client {
             $this->_flexApi = new FlexApi($this);
         }
         return $this->_flexApi;
+    }
+
+    /**
+     * Access the FrontlineApi Twilio Domain
+     *
+     * @return FrontlineApi FrontlineApi Twilio Domain
+     */
+    protected function getFrontlineApi(): FrontlineApi {
+        if (!$this->_frontlineApi) {
+            $this->_frontlineApi = new FrontlineApi($this);
+        }
+        return $this->_frontlineApi;
     }
 
     /**

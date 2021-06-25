@@ -31,6 +31,9 @@ use Twilio\Version;
  * @property bool $commandsEnabled
  * @property string $commandsUrl
  * @property string $commandsMethod
+ * @property bool $smsCommandsEnabled
+ * @property string $smsCommandsUrl
+ * @property string $smsCommandsMethod
  * @property string $networkAccessProfileSid
  */
 class FleetInstance extends InstanceResource {
@@ -58,6 +61,9 @@ class FleetInstance extends InstanceResource {
             'commandsEnabled' => Values::array_get($payload, 'commands_enabled'),
             'commandsUrl' => Values::array_get($payload, 'commands_url'),
             'commandsMethod' => Values::array_get($payload, 'commands_method'),
+            'smsCommandsEnabled' => Values::array_get($payload, 'sms_commands_enabled'),
+            'smsCommandsUrl' => Values::array_get($payload, 'sms_commands_url'),
+            'smsCommandsMethod' => Values::array_get($payload, 'sms_commands_method'),
             'networkAccessProfileSid' => Values::array_get($payload, 'network_access_profile_sid'),
         ];
 
